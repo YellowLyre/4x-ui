@@ -1,0 +1,17 @@
+[Unit]
+Description=4x-ui Web Panel Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/4x-ui
+ExecStart=/opt/4x-ui/x-ui
+Restart=always
+RestartSec=5
+User=root
+Environment=RUST_LOG=info
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target 

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{i18n "menu.walletLogin"}} - {{.title}}</title>
+    <link rel="stylesheet" href="{{ .base_path }}assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ .base_path }}assets/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .wallet-login-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .wallet-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .wallet-option:hover {
+            border-color: #007bff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 123, 255, 0.1);
+        }
+        
+        .wallet-option.selected {
+            border-color: #007bff;
+            background: #f8f9ff;
+        }
+        
+        .wallet-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .wallet-icon.ton { background: linear-gradient(45deg, #0088cc, #005eaa); }
+        .wallet-icon.sui { background: linear-gradient(45deg, #4da6ff, #0066cc); }
+        .wallet-icon.okx { background: linear-gradient(45deg, #000000, #333333); }
+        
+        .wallet-info h5 {
+            margin: 0 0 5px 0;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .wallet-info p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .connect-btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .connect-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+        }
+        
+        .connect-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-link:hover {
+            color: #ccc;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ .base_path }}" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        {{i18n "menu.backToLogin"}}
+    </a>
+    
+    <div class="wallet-login-container">
+        <div class="text-center mb-4">
+            <h2 class="h3 mb-3">{{i18n "menu.walletLogin"}}</h2>
+            <p class="text-muted">{{i18n "wallet.selectWallet"}}</p>
+        </div>
+        
+        <div id="walletOptions">
+            <div class="wallet-option" data-wallet="ton">
+                <div class="wallet-icon ton">
+                    <i class="fab fa-telegram-plane"></i>
+                </div>
+                <div class="wallet-info">
+                    <h5>TON Wallet</h5>
+                    <p>{{i18n "wallet.tonDescription"}}</p>
+                </div>
+            </div>
+            
+            <div class="wallet-option" data-wallet="sui">
+                <div class="wallet-icon sui">
+                    <i class="fas fa-water"></i>
+                </div>
+                <div class="wallet-info">
+                    <h5>SUI Wallet</h5>
+                    <p>{{i18n "wallet.suiDescription"}}</p>
+                </div>
+            </div>
+            
+            <div class="wallet-option" data-wallet="okx">
+                <div class="wallet-icon okx">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="wallet-info">
+                    <h5>OKX Wallet</h5>
+                    <p>{{i18n "wallet.okxDescription"}}</p>
+                </div>
+            </div>
+        </div>
+        
+        <button id="connectBtn" class="connect-btn" disabled>
+            {{i18n "wallet.selectWalletFirst"}}
+        </button>
+        
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+
+    <script src="{{ .base_path }}assets/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedWallet = null;
+        
+        // 钱包选择逻辑
+        document.querySelectorAll('.wallet-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // 清除其他选择
+                document.querySelectorAll('.wallet-option').forEach(opt => 
+                    opt.classList.remove('selected'));
+                
+                // 选择当前选项
+                option.classList.add('selected');
+                selectedWallet = option.dataset.wallet;
+                
+                // 更新连接按钮
+                const connectBtn = document.getElementById('connectBtn');
+                connectBtn.disabled = false;
+                connectBtn.textContent = `Connect ${selectedWallet.toUpperCase()} Wallet`;
+            });
+        });
+        
+        // 钱包连接逻辑
+        document.getElementById('connectBtn').addEventListener('click', async () => {
+            if (!selectedWallet) return;
+            
+            const connectBtn = document.getElementById('connectBtn');
+            const statusMessage = document.getElementById('statusMessage');
+            
+            // 显示加载状态
+            connectBtn.innerHTML = '<span class="loading-spinner"></span> Connecting...';
+            connectBtn.disabled = true;
+            statusMessage.style.display = 'none';
+            
+            try {
+                let authData = null;
+                
+                switch (selectedWallet) {
+                    case 'ton':
+                        authData = await connectTonWallet();
+                        break;
+                    case 'sui':
+                        authData = await connectSuiWallet();
+                        break;
+                    case 'okx':
+                        authData = await connectOkxWallet();
+                        break;
+                }
+                
+                if (authData) {
+                    await submitAuth(selectedWallet, authData);
+                }
+                
+            } catch (error) {
+                showMessage('error', 'Connection failed: ' + error.message);
+                connectBtn.innerHTML = `Connect ${selectedWallet.toUpperCase()} Wallet`;
+                connectBtn.disabled = false;
+            }
+        });
+        
+        // TON钱包连接
+        async function connectTonWallet() {
+            if (!window.tonConnectUI) {
+                throw new Error('TON Connect not available. Please install TonKeeper or another TON wallet.');
+            }
+            
+            // 这里需要集成真实的TON Connect逻辑
+            // 示例代码：
+            const tonProof = {
+                timestamp: Date.now(),
+                domain: { value: window.location.hostname },
+                signature: "mock_signature_" + Math.random().toString(36),
+                payload: "4x-ui-login-" + Date.now()
+            };
+            
+            return {
+                proof: tonProof,
+                address: "EQ" + Math.random().toString(36).substring(2, 50)
+            };
+        }
+        
+        // SUI钱包连接
+        async function connectSuiWallet() {
+            if (!window.suiWallet) {
+                throw new Error('SUI wallet not available. Please install a SUI wallet extension.');
+            }
+            
+            // 示例代码，需要集成真实的SUI钱包
+            return {
+                signed_tx: "mock_signed_tx_" + Math.random().toString(36),
+                address: "0x" + Math.random().toString(36).substring(2, 66),
+                signature: "mock_signature_" + Math.random().toString(36)
+            };
+        }
+        
+        // OKX钱包连接
+        async function connectOkxWallet() {
+            if (!window.okxwallet) {
+                throw new Error('OKX wallet not available. Please install OKX wallet extension.');
+            }
+            
+            // 示例代码，需要集成真实的OKX钱包
+            const timestamp = Date.now().toString();
+            return {
+                signature: "mock_signature_" + Math.random().toString(36),
+                timestamp: timestamp,
+                api_key: "mock_api_key",
+                address: "0x" + Math.random().toString(36).substring(2, 42)
+            };
+        }
+        
+        // 提交认证数据
+        async function submitAuth(wallet, authData) {
+            const response = await fetch(`{{ .base_path }}blockchain/auth/${wallet}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(authData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showMessage('success', 'Login successful! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = '{{ .base_path }}panel/';
+                }, 1500);
+            } else {
+                throw new Error(result.message || 'Authentication failed');
+            }
+        }
+        
+        // 显示消息
+        function showMessage(type, message) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.className = `status-message ${type}`;
+            statusMessage.textContent = message;
+            statusMessage.style.display = 'block';
+        }
+    </script>
+</body>
+</html> 
